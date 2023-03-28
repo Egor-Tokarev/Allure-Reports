@@ -2,7 +2,6 @@ package qa.guru.allure;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import io.qameta.allure.Allure;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +15,11 @@ public class StepsTest {
 
     private static final String REPOSITORY = "eroshenkoam/allure-example";
     private static final int ISSUE = 80;
-
     @Test
-    public void testLambdaStep() {
+    public void testLambdaStep() { // Использование лямбда-степов, для разметки теста в аллюр
         SelenideLogger.addListener("allure", new AllureSelenide());
 
-        step("Открываем главную страницу", () -> {
+        step("Открытие главной страницы", () -> {
             open("https://github.com");
         });
         step("Ищем репозиторий " + REPOSITORY, () -> {
@@ -32,25 +30,23 @@ public class StepsTest {
         step("Кликаем по ссылке репозитория " + REPOSITORY, () -> {
             $(linkText(REPOSITORY)).click();
         });
-        step("Открываем таб Issues", () -> {
+        step("Открываем таб issues", () -> {
             $("#issues-tab").click();
         });
-        step("Проверяем наличие Issue с номером " + ISSUE, () -> {
+        step("Проверяем содержание issues", () -> {
             $(withText("#" + ISSUE)).should(Condition.exist);
         });
     }
+        @Test
+        public void testAnnotatedStep() {
+            WebSteps steps = new WebSteps();
 
-    @Test
-    public void testAnnotatedStep() {
-        SelenideLogger.addListener("allure", new AllureSelenide());
-        WebSteps steps = new WebSteps();
+            steps.openMainPage();
+            steps.searchForRepository(REPOSITORY);
+            steps.clickOnRepositoryLink(REPOSITORY);
+            steps.openIssuesTab();
+            steps.shouldIssueWithNumber(ISSUE);
 
-        steps.openMainPage();
-        steps.searchForRepository(REPOSITORY);
-        steps.clickOnRepositoryLink(REPOSITORY);
-        steps.openIssuesTab();
-        steps.shouldSeeIssueWithNumber(ISSUE);
-
+        }
     }
 
-}
